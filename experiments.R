@@ -169,5 +169,5 @@ rpRc$lib = "rpart_tree"
 rpRc$LIB$name = "rpart_tree"
 
 rpRc$set(data = rpk)
-rpRc$show("static")
+rpRc$show("static",cdn=T)
 

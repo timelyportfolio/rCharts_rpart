@@ -2,7 +2,7 @@
   // Get JSON data
   (function(opts){
     var opts = {{{ opts }}};
-    var treeData = opts.data;
+    var treeData = {{{ data }}};
   
       // Calculate total nodes, max label length
       var totalNodes = 0;
@@ -147,7 +147,7 @@
       }
   
       // define the baseSvg, attaching a class for styling and the zoomListener
-      var baseSvg = d3.select("#tree-container").append("svg")
+      var baseSvg = d3.select("#" + opts.id).append("svg")
           .attr("width", viewerWidth)
           .attr("height", viewerHeight)
           .attr("class", "overlay")
