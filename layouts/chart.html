@@ -17,10 +17,17 @@
       var i = 0;
       var duration = 750;
       var root;
-  
+      
+      // define the baseSvg, attaching a class for styling and the zoomListener
+      var baseSvg = d3.select("#" + opts.id).append("svg")
+          .attr("width", "100%")
+          .attr("height", "100%")
+          .attr("class", "overlay")      
+          
+
       // size of the diagram
-      var viewerWidth = document.body.getBoundingClientRect()[0];
-      var viewerHeight = document.body.getBoundingClientRect()[1];
+      var viewerWidth = d3.select("#" + opts.id)[0][0].getBoundingClientRect().width;
+      var viewerHeight = d3.select("#" + opts.id)[0][0].getBoundingClientRect().height;
   
       var tree = d3.layout.tree()
           .size([viewerHeight, viewerWidth]);
@@ -146,14 +153,10 @@
           dragStarted = null;
       }
   
-      // define the baseSvg, attaching a class for styling and the zoomListener
-      var baseSvg = d3.select("#" + opts.id).append("svg")
-          .attr("width", viewerWidth)
-          .attr("height", viewerHeight)
-          .attr("class", "overlay")
+      baseSvg
           .call(zoomListener);
   
-  
+/*  
       // Define the drag listeners for drag/drop behaviour of nodes.
       dragListener = d3.behavior.drag()
           .on("dragstart", function(d) {
@@ -175,18 +178,18 @@
               }
   
               // get coords of mouseEvent relative to svg container to allow for panning
-              relCoords = d3.mouse($('svg').get(0));
+              relCoords = d3.mouse(svgGroup[0][0]);
               if (relCoords[0] < panBoundary) {
                   panTimer = true;
                   pan(this, 'left');
-              } else if (relCoords[0] > ($('svg').width() - panBoundary)) {
+              } else if (relCoords[0] > (viewerWidth - panBoundary)) {
   
                   panTimer = true;
                   pan(this, 'right');
               } else if (relCoords[1] < panBoundary) {
                   panTimer = true;
                   pan(this, 'up');
-              } else if (relCoords[1] > ($('svg').height() - panBoundary)) {
+              } else if (relCoords[1] > (viewerHeight - panBoundary)) {
                   panTimer = true;
                   pan(this, 'down');
               } else {
@@ -245,7 +248,7 @@
               draggingNode = null;
           }
       }
-  
+*/
       // Helper functions for collapsing and expanding nodes.
   
       function collapse(d) {
@@ -356,6 +359,8 @@
           };
           childCount(0, root);
           var newHeight = d3.max(levelWidth) * 25; // 25 pixels per line  
+          
+          
           tree = tree.size([newHeight, viewerWidth]);
   
           // Compute the new tree layout.
@@ -378,7 +383,7 @@
   
           // Enter any new nodes at the parent's previous position.
           var nodeEnter = node.enter().append("g")
-              .call(dragListener)
+             // .call(dragListener)
               .attr("class", "node")
               .attr("transform", function(d) {
                   return "translate(" + source.y0 + "," + source.x0 + ")";

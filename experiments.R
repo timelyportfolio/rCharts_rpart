@@ -167,7 +167,10 @@ rpRc <- rChartsRpart$new()
 rpRc$setLib(".")
 rpRc$lib = "rpart_tree"
 rpRc$LIB$name = "rpart_tree"
+rpRc$setTemplate(
+  chartDiv = "<{{container}} id = '{{ chartId }}' class = '{{ lib }}' style = 'height:100%;width:100%;'></{{ container}}>"
+)
 
 rpRc$set(data = rpk)
-rpRc$show("static",cdn=T)
+rpRc$show("static")
 
