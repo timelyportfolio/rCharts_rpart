@@ -1,6 +1,7 @@
 library(rpart)
 library(partykit)
 library(rCharts)
+library(jsonlite)
 
 
 #set up a little rpart as an example
