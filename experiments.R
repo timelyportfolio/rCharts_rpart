@@ -4,6 +4,7 @@ library(rattle)
 library(rpart.plot)
 library(RColorBrewer)
 library(partykit)
+library(htmltools)
 
 rp <- rpart(
   hp ~ cyl + disp + mpg + drat + wt + qsec + vs + am + gear + carb,
@@ -50,14 +51,26 @@ list.map(r.rep, .$id)
 list.filter(r.rep, rr->{ names(rr)[1] == "id" })
 
 
-rpNet <- function(l){
+rpNet <- function(n){
+  l = unclass(n)$kids
   list.map(l, .$id)
 }
+
+rpNet2 <- function(l){
+  list.map(l, list(id = .$id, children = lapply(unclass(.$kids),function(k){return(rpNet(k))})))
+}
+
+
+nodeapply(
+  rpk
+  ,4
+  ,rpNet
+) %>>% list.all( length(.) == 0)
 
 nodeapply(
   rpk
   ,1:length(rpk)
-  ,function(z){rpNet(unclass(z)$kids)}
+  ,rpNet
 ) %>>%
   list.search(!is.null(.)) %>>%
   (
@@ -89,3 +102,29 @@ rpk.text <- capture.output( print(rpk) ) %>>%
           , stringsAsFactors = F )
         )
   ) %>>% list.stack
+
+
+
+l_levels <- list()
+n = 1
+level = 1
+while( list.all( nodeapply(rpk, n,rpNet), length(.) > 0 ) ) {
+  n = unlist(nodeapply(rpk,n,rpNet)) %>>% as.numeric
+  l_levels <- list.append(l_levels,nodeapply(rpk,n,rpNet))
+}
+
+
+
+l_levels <- list( id = 1, children = nodeapply( rpk, 1, rpNet) )
+lapply(
+  l_levels$children
+  ,function(n){
+    list(children = nodeapply(rpk,unlist(n),rpNet))
+  }
+)
+
+
+rapply(rpk$node,unclass,how="replace") %>>%
+  jsonlite::toJSON( auto_unbox = T ) %>>% 
+  ( gsub( x=., pattern = "kids", replacement="children")) %>>% 
+  ( gsub ( x=., pattern = '"id":', replacement = '"name":' ) )
