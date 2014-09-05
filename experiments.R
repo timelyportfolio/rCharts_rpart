@@ -5,6 +5,8 @@ library(rpart.plot)
 library(RColorBrewer)
 library(partykit)
 library(htmltools)
+library(SVGAnnotation)
+library(pipeR)
 
 rp <- rpart(
   hp ~ cyl + disp + mpg + drat + wt + qsec + vs + am + gear + carb,
@@ -15,10 +17,6 @@ rp <- rpart(
 
 fancyRpartPlot(rp)
 
-
-library(SVGAnnotation)
-library(pipeR)
-library(htmltools)
 
 svgPlot(fancyRpartPlot(rp)) %>>% saveXML %>>% HTML %>>% html_print()
 
@@ -127,4 +125,49 @@ lapply(
 rapply(rpk$node,unclass,how="replace") %>>%
   jsonlite::toJSON( auto_unbox = T ) %>>% 
   ( gsub( x=., pattern = "kids", replacement="children")) %>>% 
-  ( gsub ( x=., pattern = '"id":', replacement = '"name":' ) )
+  ( gsub ( x=., pattern = '"id":([0-9]*)', replacement = '"name":"node\\1"' ) )# %>>%
+  #cat( file = "../8850659195485a5c5838/rp.json" )
+
+
+rl <- modifyList(
+  rl
+  ,list.match(rl, "kids")
+)
+
+
+library(rCharts)
+
+
+rChartsRpart <- setRefClass(
+  "rChartsRpart",
+  contains = "Dimple",
+  methods = list(
+    initialize = function(){
+      callSuper(); 
+    },
+    getPayload = function (chartId) {
+      data =  jsonlite::toJSON(
+        rapply(params$data$node,unclass,how="replace")
+        ,auto_unbox = T
+      )
+      data = gsub( x=data, pattern = "kids", replacement="children") 
+      data = gsub ( x=data, pattern = '"id":([0-9]*)', replacement = '"name":"node\\1"' ) 
+      chart = toChain(params$chart, "myChart")
+      controls_json = toJSON(params$controls)
+      controls = setNames(params$controls, NULL)
+      opts = toJSON2(params[!(names(params) %in% c("data", "chart", 
+                                                   "controls"))])
+      list(opts = opts, data = data, chart = chart, chartId = chartId, 
+           controls = controls, controls_json = controls_json)
+    }
+  )
+)
+
+rpRc <- rChartsRpart$new()
+rpRc$setLib(".")
+rpRc$lib = "rpart_tree"
+rpRc$LIB$name = "rpart_tree"
+
+rpRc$set(data = rpk)
+rpRc$show("static")
+

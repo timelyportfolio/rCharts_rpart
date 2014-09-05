@@ -1,0 +1,10 @@
+rpart_tree:
+  jshead:
+    - js/d3.v3.min.js
+  css:
+    - css/treestyle.css
+  cdn:
+    jshead:
+      - http://d3js.org/d3.v3.min.js
+    css:
+      - http://timelyportfolio.github.io/rCharts_rpart/css/treestyle.css
