@@ -60,3 +60,18 @@ rpRc$set(
   , width = 800
 )
 rpRc$show()
+
+
+rpRc <- rChartsRpart$new()
+rpRc$setLib("http://timelyportfolio.github.io/rCharts_rpart")
+rpRc$lib = "rpart_tree"
+rpRc$LIB$name = "rpart_tree"
+#rpRc$setTemplate(
+#  chartDiv = "<{{container}} id = '{{ chartId }}' class = '{{ lib }}' style = 'height:100%;width:100%;'></{{ container}}>"
+#)
+rpRc$set(
+  data = as.party(rpart(Kyphosis ~ Age + Number + Start, data = kyphosis))
+  ,height = 400
+  ,width = 800
+)
+rpRc
