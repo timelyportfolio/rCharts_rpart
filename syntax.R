@@ -108,3 +108,8 @@ rpRc$set(
   , maxLabelLength = 10
 )
 rpRc
+
+rpRc$setTemplate(
+  script = "./layouts/chart_varywidth.html"
+)
+rpRc
