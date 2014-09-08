@@ -86,10 +86,10 @@ nodeapply(
 
 
 rp.text <- capture.output(print(rp))
-gsub(x=rp.text,pattern="([1-9]*)(\\))(.*)",replacement="\\1,\\3")
+gsub(x=rp.text,pattern="([0-9]*)(\\))(.*)",replacement="\\1,\\3")
 
 rpk.text <- capture.output( print(rpk) ) %>>%
-  ( .[grep( x = ., pattern = "(\\[)([1-9]*)(\\])")] ) %>>%
+  ( .[grep( x = ., pattern = "(\\[)([0-9]*)(\\])")] ) %>>%
   strsplit( "[\\[\\|\\]]" , perl = T) %>>%
   list.map(
     tail(.,2) %>>%
