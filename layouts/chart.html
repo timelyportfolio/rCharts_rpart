@@ -6,7 +6,7 @@
   
       // Calculate total nodes, max label length
       var totalNodes = 0;
-      var maxLabelLength;
+      var maxLabelLength = 0;
       // variables for drag/drop
       var selectedNode = null;
       var draggingNode = null;
@@ -358,7 +358,7 @@
               }
           };
           childCount(0, root);
-          var newHeight = d3.max(levelWidth) * 25; // 25 pixels per line  
+          var newHeight = d3.max(levelWidth) * ( opts.nodeHeight || 25 ); // 25 pixels per line  
           
           
           tree = tree.size([newHeight, viewerWidth]);
