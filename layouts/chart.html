@@ -6,7 +6,7 @@
   
       // Calculate total nodes, max label length
       var totalNodes = 0;
-      var maxLabelLength = 0;
+      var maxLabelLength;
       // variables for drag/drop
       var selectedNode = null;
       var draggingNode = null;
@@ -57,7 +57,7 @@
       // Call visit function to establish maxLabelLength
       visit(treeData, function(d) {
           totalNodes++;
-          maxLabelLength = Math.max(d.name.length, maxLabelLength);
+          maxLabelLength = opts.maxLabelLength || Math.max(d.name.length, maxLabelLength);
   
       }, function(d) {
           return d.children && d.children.length > 0 ? d.children : null;
