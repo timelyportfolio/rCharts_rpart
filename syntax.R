@@ -51,8 +51,23 @@ rChartsRpart <- setRefClass(
       callSuper();
     },
     getPayload = function (chartId) {
+      data = rapply(params$data$node,unclass,how="replace")
+      #fill in information at the root level for now
+      #that might be nice to provide to our interactive graph
+      data$info = rapply(
+        unclass(params$data)[-1]
+        ,function(l){
+          l = unclass(l)
+          if( class(l) %in% c("terms","formula","call")) {
+            l = paste0(as.character(l)[-1],collapse=as.character(l)[1])
+          }          
+          attributes(l) <- NULL
+          return(l)
+        }
+        ,how="replace"
+      )
       data = jsonlite::toJSON(
-        rapply(params$data$node,unclass,how="replace")
+        data
         ,auto_unbox = T
       )
       data = gsub( x=data, pattern = "kids", replacement="children")
@@ -82,9 +97,9 @@ rpRc$setLib(".")
 #rpRc$setLib("http://timelyportfolio.github.io/rCharts_rpart")
 rpRc$lib = "rpart_tree"
 rpRc$LIB$name = "rpart_tree"
-#rpRc$setTemplate(
-#  chartDiv = "<{{container}} id = '{{ chartId }}' class = '{{ lib }}' style = 'height:100%;width:100%;'></{{ container}}>"
-#)
+rpRc$setTemplate(
+  chartDiv = "<{{container}} id = '{{ chartId }}' class = '{{ lib }}' style = 'height:100%;width:100%;'></{{ container}}>"
+)
 rpRc$set(
   data = rpk
   , height = 400
