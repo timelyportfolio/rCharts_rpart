@@ -310,7 +310,7 @@
           scale = zoomListener.scale();
           x = -source.y0;
           y = -source.x0;
-          x = x * scale + viewerWidth / 2;
+          x = x * scale + viewerWidth / 4;
           y = y * scale + viewerHeight / 2;
           d3.select('g').transition()
               .duration(duration)
@@ -526,6 +526,12 @@
   
       // Layout the tree initially and center on the root node.
       update(root);
+      // since we can override node height and label length (width)
+      // if zoom scale == 1 then auto scale to fit tree in container
+      if (zoomListener.scale() == 1) {
+        zoomListener.scale( viewerHeight/tree.size()[0] );
+      }
+        
       centerNode(root);
   })();
 </script>

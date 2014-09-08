@@ -76,8 +76,9 @@ rChartsRpart <- setRefClass(
   )
 )
 
+rm(rpRc)
 rpRc <- rChartsRpart$new()
-rpRc$setLib("http://timelyportfolio.github.io/rCharts_rpart")
+rpRc$setLib(".") #("http://timelyportfolio.github.io/rCharts_rpart")
 rpRc$lib = "rpart_tree"
 rpRc$LIB$name = "rpart_tree"
 rpRc$setTemplate(
@@ -85,7 +86,9 @@ rpRc$setTemplate(
 )
 rpRc$set(
   data = rpk
-  , height = 800
-  , width = 800
+  , height = 400
+  , width = 400
+  , nodeHeight = 100
+  , maxLabelLength = 10
 )
 rpRc$show()
