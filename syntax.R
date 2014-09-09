@@ -113,3 +113,12 @@ rpRc$setTemplate(
   script = "./layouts/chart_varywidth.html"
 )
 rpRc
+
+
+
+
+
+
+#get the underlying data from the rpart object
+#assuming it still exists
+unclass(rp)$call %>>% as.list %>>% (data) %>>% (get(deparse(.)))
