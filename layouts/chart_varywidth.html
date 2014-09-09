@@ -1,8 +1,11 @@
 <script>
   // Get JSON data
-  (function(opts){
-    var opts = {{{ opts }}};
-    var treeData = {{{ data }}};
+  var {{chartId}} = new function(){
+    this.opts = {{{ opts }}};
+    this.treeData = {{{ data }}};
+    
+    var opts = this.opts;
+    var treeData = this.treeData; 
   
       // Calculate total nodes, max label length
       var totalNodes = 0;
@@ -542,5 +545,6 @@
       }
         
       centerNode(root);
-  })();
+      
+  };
 </script>
