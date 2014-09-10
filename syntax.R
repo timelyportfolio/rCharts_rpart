@@ -116,7 +116,8 @@ rpRc
 
 
 
-
+#in javascript get the variables from split
+keys(treeData.info.data)
 
 
 #get the underlying data from the rpart object
