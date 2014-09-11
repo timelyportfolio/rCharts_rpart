@@ -1,0 +1,33 @@
+  var data = {{{ data }}}
+
+  
+  //sort our data by fitted or the assigned group
+  data = data.sort(function(a,b){
+    return d3.ascending(a["(fitted)"],b["(fitted)"])
+  });
+  
+
+  var colorgen = d3.scale.category10();
+  var colors = {};
+  data.map(function(d,i){
+    colors[d["(fitted)"]] = colorgen(d["(fitted)"])
+  });
+  var color = function(d) { return colors[d["(fitted)"]]; };
+    
+
+  var parcoords = d3.parcoords()("#par_container")
+      .color(color)
+      .alpha(0.4)
+      .data(data)
+      //.bundlingStrength(0.8) // set bundling strength
+      //.smoothness(0.15)
+    	//.bundleDimension("rtn_rank")
+    	.showControlPoints(false)
+      .margin({ top: 100, left: 150, bottom: 12, right: 20 })
+      .render()
+      .brushable()  // enable brushing
+      //.reorderable()
+      .interactive()  // command line mode
+      
+  //remove rownames (first) label for axis
+  d3.select(".dimension .axis > text").remove();

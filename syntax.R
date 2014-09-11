@@ -123,3 +123,6 @@ keys(treeData.info.data)
 #get the underlying data from the rpart object
 #assuming it still exists
 unclass(rp)$call %>>% as.list %>>% (data) %>>% (get(deparse(.)))
+
+
+table(unclass(as.party(rp))$fitted['(fitted)'])
