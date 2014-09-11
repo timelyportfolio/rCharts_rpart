@@ -31,6 +31,7 @@ rpart_Parcoords <- function( pk = NULL, data = NULL  ){
     
     ,tags$script(
       whisker.render( readLines("./layouts/chart_parcoords.html") ) %>>% HTML
+      #whisker.render( readLines("http://timelyportfolio.github.io/rCharts_rpart/layouts/chart_parcoords.html") ) %>>% HTML
     )
     
     
@@ -69,4 +70,5 @@ rpk <- as.party(rp)
 #now make it a parallel coordinates
 #with our rpart_Parcoords function
 
-rpart_Parcoords( rpk, mtcars ) %>>% html_print()
+rpart_Parcoords( rpk, mtcars ) %>>% html_print() -> fpath
+#rCharts:::publish_.gist(fpath,description="R + d3.js Parallel Coordinates of partykit",id=NULL)
