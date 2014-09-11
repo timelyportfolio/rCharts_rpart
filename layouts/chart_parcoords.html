@@ -31,3 +31,32 @@
       
   //remove rownames (first) label for axis
   d3.select(".dimension .axis > text").remove();
+
+  //highlight paths on hover of rownames / label
+  d3.selectAll("#par_container > svg > g > g:nth-child(1) > g.axis > g > text")
+    .on("mouseover", highlight )
+    .on("mouseout", unhighlight )
+    .style("fill",function(d){
+      return colors[d];
+    })
+
+  function highlight(e){
+    var that = this;
+    
+    var tohighlight = data.filter(function(row){
+        return row["$row"] == d3.select(that).datum();
+      });
+      
+    parcoords.highlight(
+      tohighlight
+    );
+  }
+  
+  function unhighlight(e){
+    var that = this;
+    parcoords.unhighlight(
+      data.filter(function(row){
+        return row["$row"] == d3.select(that).datum();
+      })
+    );
+  }
