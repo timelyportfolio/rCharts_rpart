@@ -29,6 +29,8 @@ rpart_Parcoords <- function( pk = NULL, data = NULL  ){
     tags$div( style = "width:100%;"
       # try to get the split / node information to interact with the parcoords brush
       ,tags$pre( id = "partykit_info", style = "width:100%;"
+         # add intro.js so people know nodes are clickable
+        ,'data-step' = "1", 'data-intro' = "click on node info to query the chart below"
         ,capture.output( pk %>>% print ) %>>%
           (
             gsub(
@@ -63,6 +65,13 @@ rpart_Parcoords <- function( pk = NULL, data = NULL  ){
       ,script="d3.parcoords.js"
       ,stylesheet="d3.parcoords.css"
     )
+    ,htmlDependency(
+      name="intro"
+      ,version="0.5.0"
+      ,src=c("href"="http://cdnjs.cloudflare.com/ajax/libs/intro.js/0.5.0/")
+      ,script="intro.min.js"
+      ,stylesheet="introjs.css"
+    )
   ))
   
   return(t)
@@ -84,4 +93,4 @@ rpk <- as.party(rp)
 #with our rpart_Parcoords function
 
 rpart_Parcoords( rpk, mtcars ) %>>% html_print() -> fpath
-#rCharts:::publish_.gist(fpath,description="R + d3.js Parallel Coordinates of partykit",id=NULL)
+#rCharts:::publish_.gist(fpath,description="R + d3.js Parallel Coordinates of partykit ver 2 with interactive querying",id=NULL)
