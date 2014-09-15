@@ -60,3 +60,124 @@
       })
     );
   }
+  
+  
+  // add interactivity for the node information to query / brush the parcoords
+  // we classed these as querynode
+  // however ignore root by doing nth-child(n+2)
+  d3.selectAll("#partykit_info > .querynode:nth-child(n+2) ")
+    .style("cursor","pointer")
+    .on("click",queryNode)
+    .each(function(d){
+      var that = d3.select(this);
+      that.datum(getQuery( that ).split(/[<,>,=]/)[0].replace(/\s/g,""));
+      return that;
+    })
+    
+  function queryNode(){
+  
+    var node = d3.select(this)
+    
+    var queried = !node.classed("queried")
+    
+    // get the query
+    var q = getQuery(node);
+    
+    if(queried){
+      // to eliminate extra css do the bolding here
+      // eventually though move to css style file
+  
+      drawBrush( q );
+
+      node
+          .style("font-size","125%")
+          .style("font-weight","bold")        
+          .classed("queried",queried)
+      
+    } else {
+      // clear the query
+      
+      node
+          .style("font-size","")
+          .style("font-weight","")
+          .classed("queried",queried)          
+          
+      clearBrush( q )
+    }
+  }
+  
+  // function to strip the query out of the text
+  function getQuery( s ){
+
+    // for now text will be the text contained in the span
+    // we'll use some regex to strip out the query
+    var q = s.text().replace(/\|/g,"").split(/[\],:]/)[1]
+    
+    return q;
+  }
+  
+  function drawBrush( q ){
+  
+    // our variable will be before <,>,=
+    var queryVar = q.split(/[<,>,=]/)[0].replace(/\s/g,"");
+    
+    // if brush already defined on this variable then remove it
+    //  actually just remove the queried class and style
+    //  new brush will supersede old brushed points
+    // not ideal behavior but joint brushes will get very complex
+    d3.selectAll("#partykit_info > .querynode:nth-child(n+2) ").filter(function(d){
+      return d == queryVar
+    }).style("font-size","")
+      .style("font-weight","")
+      .classed("queried",false)
+      
+    
+    var queryBrush = parcoords.yscale[queryVar].brush
+        .on("brushstart", function() {});
+
+    // define our brush extent to be from the split up or down to top of axis
+    // if we find a < then draw down so extent min will be bottom of axis
+    // and extent max will be our condition
+    if(q.match(/</)){
+      queryBrush.extent([ 
+        parcoords.yscale[queryVar].domain()[0] ,
+        q.split(/[<,>,=,:]/).slice(+q.split(/[<,>,=,:]/).length-1)[0].replace(/\s/g,"")
+      ])
+    } else {
+      queryBrush.extent([
+        q.split(/[<,>,=,:]/).slice(+q.split(/[<,>,=,:]/).length-1)[0].replace(/\s/g,""),
+        parcoords.yscale[queryVar].domain()[1] 
+      ])
+    }
+    
+
+    // now draw the brush to match our extent
+    // use transition to slow it down so we can see what is happening
+    // remove transition so just d3.select(".brush") to just draw
+    queryBrush(d3.selectAll(".brush").filter(function(b){return b == queryVar}).transition());
+
+    // now fire the brushstart, brushmove, and brushend events
+    // remove transition so just d3.select(".brush") to just draw
+    queryBrush.event(d3.selectAll(".brush").filter(function(b){return b == queryVar}).transition())
+  }
+  
+  function clearBrush( q ){
+  
+    // our variable will be before <,>,=
+    var queryVar = q.split(/[<,>,=]/)[0].replace(/\s/g,"");
+    
+    var queryBrush = parcoords.yscale[queryVar].brush
+        
+    queryBrush.extent([parcoords.yscale[queryVar].domain()[1],parcoords.yscale[queryVar].domain()[1]])
+    
+    // now draw the brush to match our extent
+    // use transition to slow it down so we can see what is happening
+    // remove transition so just d3.select(".brush") to just draw
+    queryBrush(d3.selectAll(".brush").filter(function(b){return b == queryVar}).transition());
+    
+    
+    // now fire the brushstart, brushmove, and brushend events
+    // remove transition so just d3.select(".brush") to just draw
+    queryBrush.event(d3.selectAll(".brush").filter(function(b){return b == queryVar}).transition())
+    
+  }

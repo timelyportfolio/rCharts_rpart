@@ -26,14 +26,27 @@ rpart_Parcoords <- function( pk = NULL, data = NULL  ){
   data = jsonlite::toJSON( cbind( pk$fitted, data[colorder] ) )
   
   t <- tagList(
-    
-    tags$div( id = "par_container", class = "parcoords", style = "height:400px;width:100%;" )
-    
-    ,tags$script(
-      whisker.render( readLines("./layouts/chart_parcoords.html") ) %>>% HTML
-      #whisker.render( readLines("http://timelyportfolio.github.io/rCharts_rpart/layouts/chart_parcoords.html") ) %>>% HTML
+    tags$div( style = "width:100%;"
+      # try to get the split / node information to interact with the parcoords brush
+      ,tags$pre( id = "partykit_info", style = "width:100%;"
+        ,capture.output( pk %>>% print ) %>>%
+          (
+            gsub(
+              x = .
+              , pattern = "(.*)(\\[)([0-9]*)(\\])(.*)"
+              , replacement = "<span class = 'querynode'>\\1\\2\\3\\4\\5</span>"
+            )
+          ) %>>%
+          paste0(collapse="\n") %>>% HTML
+      )
+
+      ,tags$div( id = "par_container", class = "parcoords", style = "height:400px;width:100%;" )
+      
+      ,tags$script(
+        whisker.render( readLines("./layouts/chart_parcoords.html") ) %>>% HTML
+        #whisker.render( readLines("http://timelyportfolio.github.io/rCharts_rpart/layouts/chart_parcoords.html") ) %>>% HTML
+      )
     )
-    
     
   ) %>>%
   attachDependencies(list(
