@@ -87,7 +87,10 @@ rpk_text %>>%
   gsub( x= .[,"description"], pattern = "[()]",replacement = "") -> rpk_text[,"description"]
 
 tagList(
-  tags$div( id = "mermaidChart", class = "mermaid"
+  tags$div(
+    capture.output(print(rpk))[2:3] %>>% HTML 
+  )
+  ,tags$div( id = "mermaidChart", class = "mermaid"
     ,paste0(
   "graph LR;"
       ,paste0(
